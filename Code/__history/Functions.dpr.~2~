@@ -1,0 +1,32 @@
+program Functions;
+
+{$APPTYPE CONSOLE}
+
+{$R *.res}
+
+uses
+  System.SysUtils;
+
+function sin(x, e:real):real;
+var
+k:integer;
+sin, delta:real;
+begin
+  sin:=0;
+  k:=2;
+  delta:=x;
+  while abs(delta)>e do
+  begin
+    sin:=sin+delta;
+    delta:=-delta*x*x/k/(k+1);
+    k:=k+2;
+  end;
+  Result:=sin;
+end;
+
+var i:integer;
+begin
+  for i:=-10 to 10 do
+  writeln(sin(i, 0.001):5:2);
+  readln;
+end.
