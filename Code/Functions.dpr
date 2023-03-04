@@ -10,7 +10,7 @@ uses
 procedure Reduction(var x:real; Period:integer);
 var f:boolean;
 begin
-f:=(x<0);
+f:=x<0;
 x:=abs(x);
 while x>Period*pi do
 begin
@@ -20,7 +20,7 @@ if f then
 x:=-x;
 end;
 
-function sin(x, e:real):real;
+function sin(x, e:Real):Real;
 var
 k:integer;
 sin, delta:real;
@@ -38,7 +38,7 @@ begin
   Result:=sin;
 end;
 
-function cos(x, e:real):real;
+function cos(x, e:Real):Real;
 var
 k:integer;
 cos, delta:real;
@@ -56,31 +56,64 @@ begin
   Result:=cos;
 end;
 
-function tg(x, e:real):real;
+procedure tg(var x:Real; e:Real; var Error:boolean);
 begin
   Reduction(x, 1);
-  if abs(abs(x)-pi/2)<e then
-  Result:=1/e
-  else
-  Result:=sin(x, e)/cos(x, e);
+  Error:=abs(abs(x)-pi/2)<e;
+  if not Error then
+  x:=sin(x, e)/cos(x, e);
 end;
 
-function ctg(x, e:real):real;
+procedure ctg(var x:Real; e:Real; var Error:boolean);
 begin
   Reduction(x, 1);
-  if abs(x)<e then
-  Result:=1/e
-  else
-  Result:=cos(x, e)/sin(x, e);
+  Error:=abs(x)<e;
+  if not Error then
+  x:=cos(x, e)/sin(x, e);
 end;
 
+procedure loge(var x:Real; e:Real; var Error:Boolean);
+begin
+  Error:=x<e;
+  if not Error then
+  x:=ln(x);
+end;
+
+procedure log10(var x:Real; e:Real; var Error:Boolean);
+begin
+  Error:=x<e;
+  if not Error then
+  x:=ln(x)/ln(10);
+end;
+
+procedure log2(var x:Real; e:Real; var Error:Boolean);
+begin
+  Error:=x<e;
+  if not Error then
+  x:=ln(x)/ln(2);
+end;
+
+procedure sqrt_4all(var x:Real; e:Real; var Error:Boolean);
+begin
+  Error:=x<0;
+  if not Error then
+  x:=sqrt(x);
+end;
 
 var i:integer;
+x:real;
+Error:Boolean;
 begin
-  for i:=-10 to 10 do
+for i:=-10 to 10 do
   begin
     write('x = ', i);
-    writeln('   ctg(x) = ', ctg(i, 0.001):7:2);
+    x:=i;
+    Error:=False;
+    sqrt_4all(x, 0.01, Error);
+    if Error then
+    writeln(' Не определён')
+    else
+    writeln(' ln(x) = ', x:7:3);
   end;
   readln;
 end.
