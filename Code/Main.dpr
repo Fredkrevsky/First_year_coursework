@@ -8,67 +8,94 @@ uses
   System.SysUtils;
 
 const r=100;
-TOperators:array[1..14] of string = ('+', '-', '*', '/',
-'sin', 'cos', 'tg', 'ctg', 'ln', 'log10', 'abs', 'sqr', 'sqrt', 'exp');
-TOperands:array[1..11] of string = ('0', '1', '2', '3', '4', '5', '6', '7',
-'8', '9', '.');
+e = 0.001;
+ListOfOperations:array[1..15] of string = ('+', '-', '*', '/',
+'sin', 'cos', 'tg', 'ctg', 'ln', 'log10', 'abs', 'sqr', 'sqrt', 'exp', '=');
+
 type
-TMasOfOperands = array[1..r] of String;
-TMasOfOperators = array[1..r] of String;
+TMasOfOperands = array[1..r+1] of Real;
+TMasOfOperations = array[1..r] of Integer;
 
-
-{procedure SplitIntoArrays(s:string ;var Operands:TMasOfOperands; var Operators:TMasOfOperators);
-var i:Integer;
+procedure Possible;
+var i:integer;
 begin
-i:=1;
-}
-
-//Сделать исключения, когда два подряд операнда
-//Или операнд в начале
-
-
-//Разбиваем на два массива: Операций и операндов
-//Т.е. цифры и не цифры
-procedure IntoArrays(var s:String; var Operands:TMasOfOperands; var Operators:TMasOfoperators);
-var i, g1, j:Integer;
-begin
-j:=1;
-i:=1;
-g1:=1;
-while (i<=Length(s)) do
-begin
-  if s[i] = '+' then
+  writeln('Возможные функции:');
+  for i:=Low(ListOfOperations) to High(ListOfOperations) do
   begin
-    Operands[j]:=copy(s, g1, i-g1);
-    Operators[j]:=copy(s, i, 1);
-    Inc(j);
-    g1:=i+1;
+    writeln(i, ': ', ListOfOperations[i]);
   end;
-  Inc(i);
 end;
-i:=Length(s);
-  while (i>=1) and (s[i]<>'+') do
-  Dec(i);
-  Operands[j]:=copy(s, i+1, length(s)-i);
+
+procedure Enter_The_Problem(var Operands:TMasOfOperands;
+var Operations:TMasOfOperations; var Number:integer);
+var
+CurrPunkt:string;
+i:integer;
+begin
+  Number:=1;
+  i:=1;
+  Writeln('Введите операнд:');
+  readln(Operands[i]);
+  writeln('Введите операцию:');
+  readln(Operations[i]);
+  while Operations[i]<>15 do
+  begin
+    Inc(Number);
+    Inc(i);
+    writeln('Введите операнд:');
+    readln(Operands[i]);
+    writeln('Введите операцию:');
+    readln(Operations[i]);
+  end;
+end;
+
+procedure DisplayArrays(Operands:TMasOfOperands;
+Operations:TMasOfOperations; Number:integer);
+var i:integer;
+begin
+for i:=1 to Number do
+begin
+Writeln(Operands[i]:8:3);
+Writeln(Operations[i]);
+end;
+end;
+
+procedure Calculating(var Result:Real; var Operands:TMasOfOperands;
+Operations:TMasOfOperations; Number:integer; var Flag:boolean);
+var i:integer;
+begin
+  i:=1;
+  Flag:=True;
+  while Flag and (i<=Number-1) do
+  begin
+    case Operations[i] of
+      1: Operands[i+1]:=Operands[i]+Operands[i+1];
+      2: Operands[i+1]:=Operands[i]-Operands[i+1];
+      3: Operands[i+1]:=Operands[i]*Operands[i+1];
+      4: if abs(Operands[i])<e then
+      Flag:=False
+      else
+      Operands[i+1]:=Operands[i]/Operands[i+1];
+      else
+      Flag:=False;
+    end;
+    Inc(i);
+  end;
+  Result:=Operands[i];
 end;
 
 var s:string;
 i:Integer;
 Operands:TMasOfOperands;
-Operators:TMasOfoperators;
-
-begin           //Пока реализую для +
-Writeln('Введите пример:');
-Readln(s);
-IntoArrays(s, Operands, Operators);
-Writeln('Итоговые массивы:');
-for i:=1 to 3 do
-  begin
-    writeln(Operands[i]);
-  end;
-for i:=1 to 2 do
-  begin
-    writeln(Operators[i]);
-  end;
+Operations:TMasOfOperations;
+Number:integer;
+Result:Real;
+Flag:boolean;
+begin
+Writeln('Допустимые операции:');
+Possible;
+Enter_The_Problem(Operands, Operations, Number);
+Calculating(Result, Operands, Operations, Number, Flag);
+writeln('Результат = ', Result:10:3);
 Readln;
 end.
