@@ -9,146 +9,95 @@ uses
 
 const r=100;
 e = 0.001;
-AvailableOperations:array[1..15] of string = ('sin', 'cos', 'tg', 'ctg', 'ln', 'log10',
-'abs', 'sqr', 'sqrt', 'exp', '+', '-', '*', '/', '=');
+AvailableButtons:array[1..17] of string = ('sin', 'cos', 'tg', 'ctg', 'ln', 'lg',
+'abs', 'sqr', 'sqrt', 'exp', '+', '-', '*', '/', '=', '(', ')');
+Numbers = ('0123456789.');
 
 type
-TMasOfOperands = array[1..r] of Real;
-TMasOfOperations = array[1..r] of Integer;
+TNumber = Real;
+TProblem = array[1..r] of array [1..2] of TNumber;
 
-procedure Possible;
+(*
+0 - число
+1 - не число
+*)
+
+procedure Possible;                          //Ничего делать не надо
 var i:integer;
 begin
   writeln('Возможные функции:');
-  for i:=Low(AvailableOperations) to High(AvailableOperations) do
+  for i:=Low(AvailableButtons) to High(AvailableButtons) do
   begin
-    writeln(i, ': ', AvailableOperations[i]);
+    writeln(i, ': ', AvailableButtons[i]);
   end;
 end;
 
-procedure Enter_The_Problem(var Operands:TMasOfOperands;
-var Operations:TMasOfOperations; var Number:integer);
-var
-i:integer;
-PunktOfMenu:char;
-begin
-  i:=0;
-  Operations[i]:=1;
-  while Operations[i]<>15 do
-  begin
-  Inc(i);
-  Inc(Number);
-  Writeln('Выберите что будете вводить:');
-  writeln('1.Унарную операцию');
-  Writeln('2.Операнд');
-  Readln(PunktOfMenu);
-  if PunktOfMenu = '1' then
-    begin
-    Writeln('Введите унарную операцию:');
-    Readln(Operations[i]);
-    Writeln('Введите операнд:');
-    Readln(Operands[i]);
-      case Operations[i] of
-      1: Operands[i]:=sin(Operands[i]);
-      2: Operands[i]:=cos(Operands[i]);
-      else
-      writeln('Пока такой функции не сущетсвует');
-      end;
-    end;
-  if PunktOfMenu = '2' then
-    begin
-    Writeln('Введите операнд:');
-    Readln(Operands[i]);
-    end;
-    Writeln('Введите бинарную операцию');
-    Readln(Operations[i]);
-  end;
-end;
-
-procedure DisplayArrays(Operands:TMasOfOperands;
-Operations:TMasOfOperations; Number:integer);
-var i:integer;
-begin
-for i:=1 to Number do
-begin
-Writeln('Число = ', Operands[i]:8:3);
-Writeln('Операция = ' ,Operations[i]);
-end;
-end;
-
-procedure Calculating(var Operands:TMasOfOperands;
-var Operations:TMasOfOperations; Number:integer; var Flag:boolean);
-var i:integer;
+procedure Enter_The_Problem(var strProblem:string; var Flag:Boolean);  //В перспективе удалить
 begin
   Flag:=True;
+  writeln('Введите пример:');
+  Readln(strProblem);
+end;
+
+procedure Into_Array(strProblem:string; var Problem:TProblem; Flag:Boolean; var Problem_Length:Integer);
+var i:Integer;
+TempStr:string;                       //Сделать защиту от двух точек
+begin
   i:=1;
-  while flag and (i<Number) do
+  Problem_Length:=0;
+  while i<=length(strProblem) do
   begin
-  case Operations[i] of
-    11: Operands[i+1]:=Operands[i]+Operands[i+1];
-    12: Operands[i+1]:=Operands[i]-Operands[i+1];
-    13: Operands[i+1]:=Operands[i]*Operands[i+1];
-    14: if abs(Operands[i])<e then
-    Flag:=False
-    else
-    Operands[i+1]:=Operands[i]/Operands[i+1];
-  end;
-  Inc(i);
-  end;
-end;
-
-function isInPriority(operations:TMasOfOperations; Number:Integer):boolean;
-begin
-  Result:=((Operations[Number] = 13) or (Operations[Number] = 14))
-  and ((Operations[Number-1] = 11) or (Operations[Number-1] = 12));
-end;
-
-procedure Priority_Swap(var Operands:TMasOfOperands;
-var Operations:TMasOfOperations; Number:Integer);
-var intTemp:integer;
-realTemp:real;
-begin
-  intTemp:=Operations[Number];
-  Operations[Number]:=Operations[Number-1];
-  Operations[Number-1]:=intTemp;
-
-  realTemp:=Operands[Number-1];
-  Operands[Number-1]:=Operands[Number];
-  Operands[Number]:=Operands[Number+1];
-  Operands[Number+1]:=realTemp;
-end;
-
-
-procedure Prioritet(var Operands:TMasOfOperands;
-var Operations:TMasOfOperations; Number:Integer);
-var i:integer;
-Flag:boolean;
-begin
-i:=2;
-while i<Number do
-  begin
-  while (i>1) and isInPriority(Operations, i) do
+    TempStr:='';
+    while (i<=Length(strProblem)) and (pos(strProblem[i], Numbers)<>0) do
     begin
-    Priority_Swap(Operands, Operations, i);
-    Dec(i);
+      TempStr:=TempStr+strProblem[i];
+      Inc(i);
     end;
-  Inc(i);
+    if TempStr<>'' then
+    begin
+      if pos('.', TempStr)<>0 then
+      TempStr[pos('.', TempStr)]:=',';
+      Inc(Problem_Length);
+      Problem[Problem_Length][1]:=strToFloat(TempStr);
+      Problem[Problem_Length][2]:=0;
+    end;
+    Inc(i);
   end;
+end;
+
+procedure Display_Array(Problem:TProblem; Problem_Length:integer);
+var i:integer;
+begin
+  for i:=1 to Problem_Length do
+  begin
+    Writeln(Problem[i][1]:10:3);
+  end;
+end;
+
+procedure Calculating(var Problem:TProblem; Left, Right:Integer; var Flag:boolean);
+var i:integer;
+begin
+
+end;
+
+procedure Find_Brackets(var Problem:TProblem; Problem_Length:Integer;
+var Left, Right:Integer; var Flag:boolean);
+ var
+ i:Integer;
+ f:boolean;
+begin
+
 end;
 
 var
-Operands:TMasOfOperands;
-Operations:TMasOfOperations;
-Number:integer;
-Result:Real;
+Problem:Tproblem;
+strProblem:string;
+Problem_Length, Left, Right:integer;
 Flag:boolean;
 begin
-Writeln('Допустимые операции:');
-Possible;
-Enter_The_Problem(Operands, Operations, Number);
-Prioritet(Operands, Operations, Number);
-DisplayArrays(Operands, Operations, Number);
-Calculating(Operands, Operations, Number, Flag);
-writeln('Результат = ', Operands[Number]:10:3);
-Readln;
+  Possible;
+  Enter_The_Problem(strProblem, Flag);
+  Into_Array(strProblem, Problem, Flag, Problem_Length);
+  Display_Array(Problem, Problem_Length);
+  Readln;
 end.
