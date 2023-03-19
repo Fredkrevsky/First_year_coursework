@@ -13,6 +13,11 @@ r = 100;
 
 type
 Tmas = array[1..r] of string;
+Pointer = ^stack;
+stack = record
+data:string;
+next:Pointer;
+end;
 
 procedure Enter_The_Problem(var strProblem:string);
 begin
@@ -20,7 +25,25 @@ begin
   Readln(strProblem);
 end;
 
-procedure Spaces(var strProblem:string; var Flag:Boolean; var MasProblem:TMas; var LengthMas:Integer);
+procedure AddToStack(StrToAdd:string; var St:Pointer);
+var x:Pointer;
+begin
+  New(x);
+  x^.Data:=StrToAdd;
+  x^.Next:=St;
+  St:=x;
+end;
+
+procedure Print_Stack(var St:Pointer);
+begin
+  while St^.Next<>nil do
+  begin
+    Writeln(St^.Data);
+    St:=St^.Next;
+  end;
+end;
+
+procedure Spaces(var strProblem:string; var Flag:Boolean; var MasProblem:TMas; var LengthMas:Integer; var St:Pointer);
 var i:Integer;
 NumberOfDots:Byte;
 Temp:string;
@@ -45,25 +68,23 @@ begin
         Flag:=False;
         Inc(LengthMas);
         MasProblem[LengthMas]:=Temp;
-        Inc(i);
+        AddToStack(Temp, St);
       end;
     '+', '-', '*', '/', '^', '(', ')':
       begin
         Inc(LengthMas);
-        Temp:=strProblem[i];
-        MasProblem[LengthMas]:=Temp;
-        Inc(i);
-        if i<=Length(strProblem) then
+        MasProblem[LengthMas]:=strProblem[i];
+        AddToStack(strProblem[i], St);
         Inc(i);
       end;
     else
       Flag:=False;
-      Inc(i);
     end;
   end;
 end;
 
 var
+St:Pointer;
 strProblem:string;
 Flag:boolean;
 MasProblem:TMas;
@@ -74,7 +95,9 @@ begin
     LengthMas:=0;
     Flag:=True;
     Enter_The_Problem(strProblem);
-    Spaces(strProblem, Flag, MasProblem, LengthMas);
+    New(St);
+    St^.Next:=nil;
+    Spaces(strProblem, Flag, MasProblem, LengthMas, St);
     if Flag then
     begin
     Writeln('В строку:');
@@ -82,6 +105,8 @@ begin
     Writeln('В массив:');
     for var j:=1 to LengthMas do
       Writeln(MasProblem[j]);
+    Writeln('Через стек:');
+    Print_Stack(St);
     end
     else
     Writeln('Ошибка');
