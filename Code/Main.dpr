@@ -13,43 +13,58 @@ r = 100;
 
 type
 Tmas = array[1..r] of string;
-Pointer = ^stack;
-stack = record
-data:string;
-next:Pointer;
+Pointer = ^Element;
+Element = record
+Data:string;
+Next:Pointer;
 end;
 
-procedure Enter_The_Problem(var strProblem:string);
+procedure Push(var Stack:Pointer; ToAdd:string);
+var
+Temp:Pointer;
 begin
-  writeln('Введите пример:');
-  Readln(strProblem);
+  New(Temp);
+  Temp^.Data:=ToAdd;
+  Temp^.Next:=Stack;
+  Stack:=Temp;
 end;
 
-procedure AddToStack(StrToAdd:string; var St:Pointer);
-var x:Pointer;
+procedure Pop(var Stack:Pointer; var ToPop:string);
+var
+  Temp:Pointer;
 begin
-  New(x);
-  x^.Data:=StrToAdd;
-  x^.Next:=St;
-  St:=x;
-end;
-
-procedure Push(var Temp:Pointer; St:Pointer);
-var x:Pointer;
-begin
-
-end;
-
-procedure Print_Stack(var St:Pointer);
-begin
-  while St^.Next<>nil do
+  if Stack <> nil then
   begin
-    Writeln(St^.Data);
-    St:=St^.Next;
+    ToPop:=Stack^.Data;
+    Temp:=Stack;
+    Stack:=Stack^.Next;
+    Dispose(Temp);
   end;
 end;
 
-procedure Analyze(var strProblem:string; var Flag:Boolean; var MasProblem:TMas; var LengthMas:Integer; var St:Pointer);
+procedure PrintStack(Stack:Pointer);
+begin
+  while Stack<>nil do
+  begin
+    Writeln(Stack^.Data);
+    Stack:=Stack^.Next;
+  end;
+end;
+
+procedure FreeStack(var Stack:Pointer);          //Только в самом конце удалять
+var
+   Temp:Pointer;
+begin
+  while Stack <> nil do
+  begin
+    Temp:=Stack;
+    Stack:=Stack^.Next;
+    Dispose(Temp);
+  end;
+end;
+
+procedure Analyze(var Problem:string; var Flag:Boolean; var MasProblem:TMas;
+var LengthMas:Integer; var Stack:Pointer);
 var i:Integer;
 NumberOfDots:Byte;
 LocalFlag:Boolean;
@@ -58,101 +73,103 @@ Temp:string;
 begin
   LengthMas:=1;
   i:=1;
-  while (i<=length(strProblem)) and Flag do
+  while (i<=length(Problem)) and Flag do
   begin
     Temp:='';
     NumberOfDots:=0;
     LocalFlag:=False;
-    case strProblem[i] of
+    case Problem[i] of
     '0'..'9':
       begin
-        while (i<=Length(strProblem)) and ((strProblem[i]>='0') and (strProblem[i]<='9') or (strProblem[i] = '.')) do
+        while (i<=Length(Problem)) and ((Problem[i]>='0') and
+        (Problem[i]<='9') or (Problem[i] = '.')) do
         begin
-          Temp:=Temp+strProblem[i];
-          if strProblem[i] = '.' then
+          Temp:=Temp+Problem[i];
+          if Problem[i] = '.' then
           Inc(NumberOfDots);
           Inc(i);
         end;
-        if NumberOfDots>1 then
-        Flag:=False;
+        if NumberOfDots<2 then
+        LocalFlag:=True;
         MasProblem[LengthMas]:=Temp;
         //AddToStack(Temp, St);
       end;
     '+', '-':
       begin
-        AddToStack(strProblem[i], St);
-        TempPointer:=St;
-        while St^.next <> nil do
-        Push(TempPointer, St);
+        //AddToStack(Problem[i], St);
+        TempPointer:=Stack;
+        while Stack^.next <> nil do
+        //Push(TempPointer, St);
       end;
      '*', '/':
       begin
-        while (St^.Next<>nil) and (St^data)
+
       end;
      '^':
       begin
-        AddToStack(strProblem[i], St);
-        TempPointer:=St;
-        while (St^.next <> nil) and (St^.Data <> '^') do
-        Push(TempPointer, St);
+        //AddToStack(Problem[i], St);
+        TempPointer:=Stack;
+        while (Stack^.next <> nil) and (Stack^.Data <> '^') do
+        //Push(TempPointer, St);
       end;
     '(':
       begin
-        AddToStack(strProblem[i], St);
+
       end;
     ')':
       begin
-        //MasProblem[LengthMas]:=strProblem[i];
-        //AddToStack(strProblem[i], St);
         Inc(i);
       end;
-    'a'..'z':
+    else
       begin
-        if (i<=length(strProblem)-2) then
+        if Problem[i] = 'x' then
         begin
-        Temp:=strProblem[i]+strProblem[i+1]+strProblem[i+2];
+          Inc(i);
+        end;
+        if (i<=length(Problem)-2) and not LocalFlag then
+        begin
+        Temp:=Problem[i]+Problem[i+1]+Problem[i+2];
         if (Temp = 'sin') or (Temp = 'cos') or (Temp = 'exp') or (Temp = 'sqr') or (Temp = 'ctg') then
           begin
             //MasProblem[LengthMas]:=Temp;
-            AddToStack(Temp, St);
+            //AddToStack(Temp, St);
             Inc(i, 3);
             LocalFlag:=True
           end;
         end;
-        if (i<=Length(strProblem)-1) and not LocalFlag then
+        if (i<=Length(Problem)-1) and not LocalFlag then
         begin
-        Temp:=strProblem[i]+strProblem[i+1];
+        Temp:=Problem[i]+Problem[i+1];
         if (Temp = 'ln') or (Temp = 'tg') then
           begin
             //MasProblem[LengthMas]:=Temp;
-            AddToStack(Temp, St);
+            //AddToStack(Temp, St);
             Inc(i, 2);
             LocalFlag:=True
           end;
         end;
-        if (i<=Length(strProblem)-3) and not LocalFlag then
+        if (i<=Length(Problem)-3) and not LocalFlag then
         begin
-        Temp:=strProblem[i]+strProblem[i+1]+strProblem[i+2]+strProblem[i+3];
+        Temp:=Problem[i]+Problem[i+1]+Problem[i+2]+Problem[i+3];
         if (Temp = 'sqrt') then
           begin
             //MasProblem[LengthMas]:=Temp;
-            AddToStack(Temp, St);
+            //AddToStack(Temp, St);
             Inc(i, 4);
             LocalFlag:=True;
           end;
         end;
-        Flag:=LocalFlag;
       end;
-    else
-      Flag:=False;
     end;
+    Flag:=LocalFlag;
+    Inc(i);
     Inc(LengthMas);
   end;
 end;
 
 var
-St:Pointer;
-strProblem:string;
+Stack:Pointer;
+Problem:string;
 Flag:boolean;
 MasProblem:TMas;
 LengthMas:Integer;
@@ -161,19 +178,19 @@ begin
   begin
     LengthMas:=0;
     Flag:=True;
-    Enter_The_Problem(strProblem);
-    New(St);
-    St^.Next:=nil;
-    Analyze(strProblem, Flag, MasProblem, LengthMas, St);
+    writeln('Введите пример:');
+    Readln(Problem);
+    New(Stack);
+    Stack^.Next:=nil;
+    Analyze(Problem, Flag, MasProblem, LengthMas, Stack);
     if Flag then
     begin
     Writeln('В строку:');
-    Writeln(strProblem);
+    Writeln(Problem);
     Writeln('В массив:');
     for var j:=1 to LengthMas do
       Writeln(MasProblem[j]);
     Writeln('Через стек:');
-    Print_Stack(St);
     end
     else
     Writeln('Ошибка');
