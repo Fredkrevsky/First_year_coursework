@@ -63,21 +63,20 @@ begin
   end;
 end;
 
-procedure Analyze(var Problem:string; var Flag:Boolean; var MasProblem:TMas;
+procedure Rpn(var Problem:string; var Flag:Boolean; var MasProblem:TMas;
 var LengthMas:Integer; var Stack:Pointer);
 var i:Integer;
 NumberOfDots:Byte;
-LocalFlag:Boolean;
 TempPointer:Pointer;
 Temp:string;
 begin
-  LengthMas:=1;
+  LengthMas:=0;
   i:=1;
   while (i<=length(Problem)) and Flag do
   begin
     Temp:='';
     NumberOfDots:=0;
-    LocalFlag:=False;
+    Flag:=False;
     case Problem[i] of
     '0'..'9':
       begin
@@ -89,81 +88,111 @@ begin
           Inc(NumberOfDots);
           Inc(i);
         end;
+        Dec(i);
         if NumberOfDots<2 then
-        LocalFlag:=True;
+        Flag:=True;
+        Inc(LengthMas);
         MasProblem[LengthMas]:=Temp;
-        //AddToStack(Temp, St);
       end;
     '+', '-':
       begin
-        //AddToStack(Problem[i], St);
-        TempPointer:=Stack;
-        while Stack^.next <> nil do
-        //Push(TempPointer, St);
+        Flag:=True;
+        while (Stack<>nil) do
+        begin
+          Pop(Stack, Temp);
+          Inc(LengthMas);
+          MasProblem[LengthMas]:=Temp;
+        end;
+        Push(Stack, Problem[i]);
       end;
      '*', '/':
       begin
-
+        Flag:=True;
+        while (Stack<>nil) and (Stack^.Data <> '+') and (Stack^.Data <> '-') do
+        begin
+          Pop(Stack, Temp);
+          Inc(LengthMas);
+          MasProblem[LengthMas]:=Temp;       //В перспективе как процедуру
+        end;
+        Push(Stack, Problem[i]);
       end;
      '^':
       begin
-        //AddToStack(Problem[i], St);
-        TempPointer:=Stack;
-        while (Stack^.next <> nil) and (Stack^.Data <> '^') do
-        //Push(TempPointer, St);
+        Flag:=True;
+        while (Stack<>nil) and (Stack^.Data <> '+') and (Stack^.Data <> '-')
+         and (Stack^.Data <> '*') and (Stack^.Data <> '/') do
+        begin
+          Pop(Stack, Temp);
+          Inc(LengthMas);
+          MasProblem[LengthMas]:=Temp;
+        end;
+        Push(Stack, '^');
       end;
-    '(':
+    '(':         //Скобки пока не работают
       begin
-
+        Flag:=True;
+        Push(Stack, '(');
       end;
     ')':
       begin
-        Inc(i);
+        repeat
+          Pop(Stack, Temp);
+          Inc(LengthMas);
+          MasProblem[LengthMas]:=Temp;
+        until (Stack = nil) or (Temp = '(');
+        Flag:=Temp = '(';
+        if Flag then
       end;
     else
       begin
         if Problem[i] = 'x' then
         begin
-          Inc(i);
+          Push(Stack, 'x');
+          Flag:=True;
         end;
-        if (i<=length(Problem)-2) and not LocalFlag then
+        if (i<=length(Problem)-2) and not Flag then
         begin
         Temp:=Problem[i]+Problem[i+1]+Problem[i+2];
-        if (Temp = 'sin') or (Temp = 'cos') or (Temp = 'exp') or (Temp = 'sqr') or (Temp = 'ctg') then
+        if (Temp = 'sin') or (Temp = 'cos') or (Temp = 'exp') or
+        (Temp = 'ctg') then
           begin
-            //MasProblem[LengthMas]:=Temp;
-            //AddToStack(Temp, St);
-            Inc(i, 3);
-            LocalFlag:=True
+            Push(Stack, Temp);
+            Inc(i, 2);
+            Flag:=True
           end;
         end;
-        if (i<=Length(Problem)-1) and not LocalFlag then
+        if (i<=Length(Problem)-1) and not Flag then
         begin
         Temp:=Problem[i]+Problem[i+1];
         if (Temp = 'ln') or (Temp = 'tg') then
           begin
-            //MasProblem[LengthMas]:=Temp;
-            //AddToStack(Temp, St);
-            Inc(i, 2);
-            LocalFlag:=True
+            Push(Stack, Temp);
+            Inc(i);
+            Flag:=True
           end;
         end;
-        if (i<=Length(Problem)-3) and not LocalFlag then
+        if (i<=Length(Problem)-3) and not Flag then
         begin
         Temp:=Problem[i]+Problem[i+1]+Problem[i+2]+Problem[i+3];
         if (Temp = 'sqrt') then
           begin
-            //MasProblem[LengthMas]:=Temp;
-            //AddToStack(Temp, St);
-            Inc(i, 4);
-            LocalFlag:=True;
+            Push(Stack, Temp);
+            Inc(i, 3);
+            Flag:=True;
           end;
         end;
       end;
     end;
-    Flag:=LocalFlag;
     Inc(i);
-    Inc(LengthMas);
+  end;
+  if (i>Length(Problem)) and Flag then
+  begin
+    while Stack <> nil do
+    begin
+      Pop(Stack, Temp);
+      Inc(LengthMas);
+      MasProblem[LengthMas]:=Temp;
+    end;
   end;
 end;
 
@@ -180,9 +209,8 @@ begin
     Flag:=True;
     writeln('Введите пример:');
     Readln(Problem);
-    New(Stack);
-    Stack^.Next:=nil;
-    Analyze(Problem, Flag, MasProblem, LengthMas, Stack);
+    Stack:=nil;
+    Rpn(Problem, Flag, MasProblem, LengthMas, Stack);
     if Flag then
     begin
     Writeln('В строку:');
@@ -190,7 +218,6 @@ begin
     Writeln('В массив:');
     for var j:=1 to LengthMas do
       Writeln(MasProblem[j]);
-    Writeln('Через стек:');
     end
     else
     Writeln('Ошибка');
