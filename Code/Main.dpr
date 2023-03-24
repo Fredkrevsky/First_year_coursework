@@ -51,23 +51,9 @@ begin
   end;
 end;
 
-procedure FreeStack(var Stack:Pointer);          //Только в самом конце удалять
-var
-   Temp:Pointer;
-begin
-  while Stack <> nil do
-  begin
-    Temp:=Stack;
-    Stack:=Stack^.Next;
-    Dispose(Temp);
-  end;
-end;
-
 procedure Rpn(var Problem:string; var Flag:Boolean; var MasProblem:TMas;
 var LengthMas:Integer; var Stack:Pointer);
 var i:Integer;
-NumberOfDots:Byte;
-TempPointer:Pointer;
 Temp:string;
 begin
   LengthMas:=0;
@@ -75,7 +61,6 @@ begin
   while (i<=length(Problem)) and Flag do
   begin
     Temp:='';
-    NumberOfDots:=0;
     Flag:=False;
     case Problem[i] of
     '0'..'9':
@@ -84,12 +69,9 @@ begin
         (Problem[i]<='9') or (Problem[i] = '.')) do
         begin
           Temp:=Temp+Problem[i];
-          if Problem[i] = '.' then
-          Inc(NumberOfDots);
           Inc(i);
         end;
         Dec(i);
-        if NumberOfDots<2 then
         Flag:=True;
         Inc(LengthMas);
         MasProblem[LengthMas]:=Temp;
@@ -97,7 +79,7 @@ begin
     '+', '-':
       begin
         Flag:=True;
-        while (Stack<>nil) do
+        while (Stack<>nil) and (Stack^.Data<>'(') do
         begin
           Pop(Stack, Temp);
           Inc(LengthMas);
@@ -108,7 +90,7 @@ begin
      '*', '/':
       begin
         Flag:=True;
-        while (Stack<>nil) and (Stack^.Data <> '+') and (Stack^.Data <> '-') do
+        while (Stack<>nil) and (Stack^.Data <> '+') and (Stack^.Data <> '-') and (Stack^.Data <> '(') do
         begin
           Pop(Stack, Temp);
           Inc(LengthMas);
@@ -120,7 +102,7 @@ begin
       begin
         Flag:=True;
         while (Stack<>nil) and (Stack^.Data <> '+') and (Stack^.Data <> '-')
-         and (Stack^.Data <> '*') and (Stack^.Data <> '/') do
+         and (Stack^.Data <> '*') and (Stack^.Data <> '/') and (Stack^.Data <> '(') do
         begin
           Pop(Stack, Temp);
           Inc(LengthMas);
@@ -128,20 +110,22 @@ begin
         end;
         Push(Stack, '^');
       end;
-    '(':         //Скобки пока не работают
+    '(':
       begin
         Flag:=True;
         Push(Stack, '(');
       end;
     ')':
       begin
+      Flag:=True;
         repeat
           Pop(Stack, Temp);
-          Inc(LengthMas);
-          MasProblem[LengthMas]:=Temp;
+          if Temp <> '(' then
+          begin
+            Inc(LengthMas);
+            MasProblem[LengthMas]:=Temp;
+          end
         until (Stack = nil) or (Temp = '(');
-        Flag:=Temp = '(';
-        if Flag then
       end;
     else
       begin
@@ -152,7 +136,7 @@ begin
         end;
         if (i<=length(Problem)-2) and not Flag then
         begin
-        Temp:=Problem[i]+Problem[i+1]+Problem[i+2];
+        Temp:=Copy(Problem, i, 3);
         if (Temp = 'sin') or (Temp = 'cos') or (Temp = 'exp') or
         (Temp = 'ctg') then
           begin
@@ -163,7 +147,7 @@ begin
         end;
         if (i<=Length(Problem)-1) and not Flag then
         begin
-        Temp:=Problem[i]+Problem[i+1];
+        Temp:=Copy(Problem, i, 2);
         if (Temp = 'ln') or (Temp = 'tg') then
           begin
             Push(Stack, Temp);
@@ -173,7 +157,7 @@ begin
         end;
         if (i<=Length(Problem)-3) and not Flag then
         begin
-        Temp:=Problem[i]+Problem[i+1]+Problem[i+2]+Problem[i+3];
+        Temp:=Copy(Problem, i, 4);
         if (Temp = 'sqrt') then
           begin
             Push(Stack, Temp);
@@ -196,6 +180,21 @@ begin
   end;
 end;
 
+procedure Fill_x(var MasProblem:TMas; LengthMas:Integer; x:real);
+var i:Integer;
+begin
+  for i:=1 to LengthMas do
+    begin
+      if MasProblem[i] = 'x' then
+      MasProblem[i]:=FloatToStr(x);
+    end;
+end;
+
+procedure Solve(MasProblem:TMas; LengthMas:Integer);
+begin
+
+end;
+
 var
 Stack:Pointer;
 Problem:string;
@@ -203,24 +202,22 @@ Flag:boolean;
 MasProblem:TMas;
 LengthMas:Integer;
 begin
-  for var i:=1 to 100 do
+  LengthMas:=0;
+  Flag:=True;
+  writeln('Введите пример:');
+  Readln(Problem);
+  Stack:=nil;
+  Rpn(Problem, Flag, MasProblem, LengthMas, Stack);
+  Fill_x(MasProblem, LengthMas, 23.34);
+  if Flag then
   begin
-    LengthMas:=0;
-    Flag:=True;
-    writeln('Введите пример:');
-    Readln(Problem);
-    Stack:=nil;
-    Rpn(Problem, Flag, MasProblem, LengthMas, Stack);
-    if Flag then
-    begin
-    Writeln('В строку:');
-    Writeln(Problem);
-    Writeln('В массив:');
-    for var j:=1 to LengthMas do
-      Writeln(MasProblem[j]);
-    end
-    else
-    Writeln('Ошибка');
-  end;
+  Writeln('В строку:');
+  Writeln(Problem);
+  Writeln('В массив:');
+  for var i:=1 to LengthMas do
+    Writeln(MasProblem[i]);
+  end
+  else
+  Writeln('Ошибка');
   Readln;
 end.
