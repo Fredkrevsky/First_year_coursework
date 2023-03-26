@@ -19,12 +19,28 @@ Data:string;
 Next:Pointer;
 end;
 
-procedure Push(var Stack:Pointer; ToAdd:string);
+FloatPointer = ^FloatElement;
+FloatElement = record
+Data:Real;
+Next:FloatPointer;
+end;
+
+function IsNumber(ToCheck:String):Boolean;
+begin
+  try
+    StrToFloat(ToCheck);
+    Result:=True;
+  except
+    Result:=False;
+  end;
+end;
+
+procedure Push(var Stack:Pointer; ToPush:string);
 var
 Temp:Pointer;
 begin
   New(Temp);
-  Temp^.Data:=ToAdd;
+  Temp^.Data:=ToPush;
   Temp^.Next:=Stack;
   Stack:=Temp;
 end;
@@ -42,12 +58,71 @@ begin
   end;
 end;
 
+procedure FloatPush(var Stack:FloatPointer; ToPush:Real);
+var Temp:FloatPointer;
+begin
+  New(Temp);
+  Temp^.Data:=ToPush;
+  Temp^.Next:=Stack;
+  Stack:=Temp;
+end;
+
+procedure FloatPop(var Stack:FloatPointer; var ToPop:Real);
+var
+  Temp:FloatPointer;
+begin
+  if Stack <> nil then
+  begin
+    ToPop:=Stack^.Data;
+    Temp:=Stack;
+    Stack:=Stack^.Next;
+    Dispose(Temp);
+  end;
+end;
+
+procedure FloatPrint(Stack:FloatPointer);
+begin
+  while Stack<>nil do
+  begin
+    Writeln(Stack^.Data);
+    Stack:=Stack^.Next;
+  end;
+end;
+
 procedure PrintStack(Stack:Pointer);
 begin
   while Stack<>nil do
   begin
     Writeln(Stack^.Data);
     Stack:=Stack^.Next;
+  end;
+end;
+
+procedure Prepare(var Problem:String);       //Унарный минус
+var                                          //В перспективе умножение
+i:Integer;
+begin
+  if Problem[1] = '-' then
+  Insert('0', Problem, 1);
+  i:=2;
+  while i<=Length(Problem) do
+  begin
+    if (Problem[i] = '-') and (Problem[i-1] = '(') then
+    Insert('0', Problem, i)
+    else
+    Inc(i)
+  end;
+end;
+
+procedure ReplaceDots(var MasProblem:TMas; LengthMAs:Integer);
+var
+i, Temp:Integer;
+begin
+  for i:=1 to LengthMas do
+  begin
+    Temp:=Pos('.', MasProblem[i]);
+    if Temp<>0 then
+      MasProblem[i][Temp]:=',';
   end;
 end;
 
@@ -94,7 +169,7 @@ begin
         begin
           Pop(Stack, Temp);
           Inc(LengthMas);
-          MasProblem[LengthMas]:=Temp;       //В перспективе как процедуру
+          MasProblem[LengthMas]:=Temp;
         end;
         Push(Stack, Problem[i]);
       end;
@@ -169,7 +244,7 @@ begin
     end;
     Inc(i);
   end;
-  if (i>Length(Problem)) and Flag then
+  if Flag then
   begin
     while Stack <> nil do
     begin
@@ -190,14 +265,84 @@ begin
     end;
 end;
 
-procedure Solve(MasProblem:TMas; LengthMas:Integer);
+procedure Solve(MasProblem:TMas; LengthMas:Integer; var Stack:FloatPointer; var Flag:Boolean);
+var i:Integer;
+Temp:Real;
+Operand1, Operand2:Real;
 begin
+  i:=1;
+  while (i<=LengthMas) and Flag do
+  begin
+    if IsNumber(MasProblem[i]) then
+    begin
+      FloatPush(Stack, StrToFloat(MasProblem[i]));
+      Inc(i);
+    end
+    else
+    begin
+      case Length(MasProblem[i]) of
+      1:
+        begin
+          case MasProblem[i][1] of
+          '+':
+            begin
+              FloatPop(Stack, Temp);
+              Operand2:=Temp;
+              FloatPop(Stack, Temp);
+              Operand1:=Temp;
+              FloatPush(Stack, Operand1+Operand2);
+            end;
+          '-':
+            begin
+              FloatPop(Stack, Temp);
+              Operand2:=Temp;
+              FloatPop(Stack, Temp);
+              Operand1:=Temp;
+              FloatPush(Stack, Operand1-Operand2);
+            end;
+          '*':
+            begin
+              FloatPop(Stack, Temp);
+              Operand2:=Temp;
+              FloatPop(Stack, Temp);
+              Operand1:=Temp;
+              FloatPush(Stack, Operand1*Operand2);
+            end;
+          '/':
+            begin
+              FloatPop(Stack, Temp);
+              Operand2:=Temp;
+              FloatPop(Stack, Temp);
+              Operand1:=Temp;
+              if Abs(Operand2)<e then
+              Flag:=False
+              else
+              FloatPush(Stack, Operand1/Operand2);
+            end;
+          end;
+        end;
+      2:
+        case MasProblem[i][1] of
+        'l':
+          begin
+            FloatPop(Stack, Temp);
+            Operand1:=Temp;
+          end;
 
+
+        end;
+
+      end;
+      Inc(i);
+    end;
+  end;
 end;
 
 var
+FloatStack:FloatPointer;
 Stack:Pointer;
 Problem:string;
+Temp:real;
 Flag:boolean;
 MasProblem:TMas;
 LengthMas:Integer;
@@ -206,16 +351,19 @@ begin
   Flag:=True;
   writeln('Введите пример:');
   Readln(Problem);
+  Prepare(Problem);
   Stack:=nil;
   Rpn(Problem, Flag, MasProblem, LengthMas, Stack);
-  Fill_x(MasProblem, LengthMas, 23.34);
   if Flag then
   begin
-  Writeln('В строку:');
-  Writeln(Problem);
-  Writeln('В массив:');
-  for var i:=1 to LengthMas do
-    Writeln(MasProblem[i]);
+    Fill_x(MasProblem, LengthMas, 23.34);
+    ReplaceDots(MasProblem, LengthMas);
+    Solve(MasProblem, LengthMas, FloatStack, Flag);
+      if Flag then
+      begin
+        FloatPop(FloatStack, Temp);
+        Writeln('Результат = ', Temp:10:3);
+      end;
   end
   else
   Writeln('Ошибка');
