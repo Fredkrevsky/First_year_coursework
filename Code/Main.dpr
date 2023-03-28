@@ -5,7 +5,7 @@ program Main;
 {$R *.res}
 
 uses
-  System.SysUtils;
+  MyFunctions, System.SysUtils;
 
 const
 e = 0.001;
@@ -98,8 +98,8 @@ begin
   end;
 end;
 
-procedure Prepare(var Problem:String);       //Унарный минус
-var                                          //В перспективе умножение
+procedure Prepare(var Problem:String);
+var
 i:Integer;
 begin
   if Problem[1] = '-' then
@@ -283,55 +283,55 @@ begin
       case Length(MasProblem[i]) of
       1:
         begin
+        FloatPop(Stack, Temp);
+        Operand2:=Temp;
+        FloatPop(Stack, Temp);
+        Operand1:=Temp;
           case MasProblem[i][1] of
           '+':
-            begin
-              FloatPop(Stack, Temp);
-              Operand2:=Temp;
-              FloatPop(Stack, Temp);
-              Operand1:=Temp;
               FloatPush(Stack, Operand1+Operand2);
-            end;
           '-':
-            begin
-              FloatPop(Stack, Temp);
-              Operand2:=Temp;
-              FloatPop(Stack, Temp);
-              Operand1:=Temp;
               FloatPush(Stack, Operand1-Operand2);
-            end;
           '*':
-            begin
-              FloatPop(Stack, Temp);
-              Operand2:=Temp;
-              FloatPop(Stack, Temp);
-              Operand1:=Temp;
               FloatPush(Stack, Operand1*Operand2);
-            end;
           '/':
-            begin
-              FloatPop(Stack, Temp);
-              Operand2:=Temp;
-              FloatPop(Stack, Temp);
-              Operand1:=Temp;
-              if Abs(Operand2)<e then
-              Flag:=False
-              else
-              FloatPush(Stack, Operand1/Operand2);
-            end;
+              FloatPush(Stack, Divide(Operand1, Operand2, e, Flag));
+          '^':                                            //Дописать функцию возведения в степень
+             Flag:=False;
           end;
         end;
       2:
-        case MasProblem[i][1] of
-        'l':
-          begin
-            FloatPop(Stack, Temp);
-            Operand1:=Temp;
+        begin
+          FloatPop(Stack, Temp);
+          case MasProblem[i][1] of
+          'l':
+            begin
+              Flag:=Temp>0;
+              if Flag then
+              FloatPush(Stack, ln(Temp));
+            end;
+          't':
+            begin
+              FloatPush(Stack, tg(Temp, e, Flag));
+            end;
           end;
-
-
         end;
-
+      3:
+        begin
+          FloatPop(Stack, Temp);
+          case MasProblem[i][1] of
+          's': FloatPush(Stack, Sinus(Temp, e));
+          'c':
+            begin
+              case MasProblem[i][2] of
+                't': FloatPush(Stack, Ctg(Temp, e, Flag));
+                'o': FloatPush(Stack, Cosinus(Temp, e));
+              end;
+            end;
+          'e': FloatPush(Stack, exp(Temp));
+          end;
+        end;
+      4: FloatPush(Stack, Degree(Temp, 0.5, e, Flag));
       end;
       Inc(i);
     end;
@@ -363,7 +363,9 @@ begin
       begin
         FloatPop(FloatStack, Temp);
         Writeln('Результат = ', Temp:10:3);
-      end;
+      end
+      else
+      Writeln('Ошибка');
   end
   else
   Writeln('Ошибка');

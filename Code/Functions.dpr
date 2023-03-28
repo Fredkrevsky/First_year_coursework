@@ -5,7 +5,8 @@ program Functions;
 {$R *.res}
 
 uses
-  System.SysUtils;
+  System.SysUtils,
+  MyFunctions in 'MyFunctions.pas';
 
 procedure Reduction(var x:real; Period:integer);
 var f:boolean;
