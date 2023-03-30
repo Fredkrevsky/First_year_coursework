@@ -1,2 +1,2 @@
-# First_year_coursework
-I hope I will pass my exam and Mr. Onoshko will be proud of me...
+# Курсовая работа
+Пишу курсовую работу "Программное средство калькулятор с возможностью построения графиков функций" на Delphi.
