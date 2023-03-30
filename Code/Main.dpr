@@ -283,56 +283,49 @@ begin
       case Length(MasProblem[i]) of
       1:
         begin
-        FloatPop(Stack, Temp);
-        Operand2:=Temp;
-        FloatPop(Stack, Temp);
-        Operand1:=Temp;
+        FloatPop(Stack, Operand1);
+        FloatPop(Stack, Operand2);
           case MasProblem[i][1] of
           '+':
-              FloatPush(Stack, Operand1+Operand2);
+              Temp:=Operand1+Operand2;
           '-':
-              FloatPush(Stack, Operand1-Operand2);
+              Temp:=Operand1-Operand2;
           '*':
-              FloatPush(Stack, Operand1*Operand2);
+              Temp:=Operand1*Operand2;
           '/':
-              FloatPush(Stack, Divide(Operand1, Operand2, e, Flag));
-          '^':                                            //Дописать функцию возведения в степень
-             Flag:=False;
+              Temp:=Divide(Operand1, Operand2, e, Flag);
+          '^':
+             Temp:=Degree(Operand1, Operand2, e, Flag);
           end;
         end;
       2:
         begin
-          FloatPop(Stack, Temp);
+          FloatPop(Stack, Operand1);
           case MasProblem[i][1] of
           'l':
-            begin
-              Flag:=Temp>0;
-              if Flag then
-              FloatPush(Stack, ln(Temp));
-            end;
+              Temp:=Loge(Operand1, e, Flag);
           't':
-            begin
-              FloatPush(Stack, tg(Temp, e, Flag));
-            end;
+              Temp:=tg(Temp, e, Flag);
           end;
         end;
       3:
         begin
-          FloatPop(Stack, Temp);
+          FloatPop(Stack, Operand1);
           case MasProblem[i][1] of
-          's': FloatPush(Stack, Sinus(Temp, e));
+          's': Temp:=Sinus(Operand1, e);
           'c':
             begin
               case MasProblem[i][2] of
-                't': FloatPush(Stack, Ctg(Temp, e, Flag));
-                'o': FloatPush(Stack, Cosinus(Temp, e));
+                't': Temp:=Ctg(Operand1, e, Flag);
+                'o': Temp:=Cosinus(Operand1, e);
               end;
             end;
-          'e': FloatPush(Stack, exp(Temp));
+          'e': Temp:=exp(Operand1);
           end;
         end;
-      4: FloatPush(Stack, Degree(Temp, 0.5, e, Flag));
+      4: Temp:=Degree(Operand1, 0.5, e, Flag);
       end;
+      FloatPush(Stack, Temp);
       Inc(i);
     end;
   end;
