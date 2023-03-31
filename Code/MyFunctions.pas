@@ -15,8 +15,8 @@ implementation
 
 function Divide(Operand1, Operand2, e:Real; var Flag:Boolean):Real;
 begin
-  Flag:=Abs(Operand2)>e;
-  if Flag then
+  Flag:=Abs(Operand2)<e;
+  if not Flag then
   Result:=Operand1/Operand2
   else
   Result:=0;
@@ -34,7 +34,7 @@ begin
   begin
     if Operand2<e then
     begin
-      Flag:=False;
+      Flag:=True;
     end;
     Result:=0;
   end
@@ -64,7 +64,7 @@ begin
     end
     else
     begin
-      Flag:=False;
+      Flag:=True;
       Result:=0;
     end;
   end;
@@ -122,7 +122,7 @@ end;
 function tg(x, e:Real; var Flag:boolean):Real;
 begin
   Reduction(x, 1);
-  Flag:=abs(abs(x)-pi/2)>e;
+  Flag:=Abs(Abs(x)-pi/2)<e;
   if not Flag then
   Result:=sinus(x, e)/cosinus(x, e)
   else
@@ -132,7 +132,7 @@ end;
 function ctg(x, e:Real; var Flag:boolean):Real;
 begin
   Reduction(x, 1);
-  Flag:=abs(x)>e;
+  Flag:=Abs(x)<e;
   if not Flag then
   Result:=cosinus(x, e)/sinus(x, e)
   else
@@ -141,8 +141,8 @@ end;
 
 function loge(x, e:Real; var Flag:Boolean):Real;
 begin
-  Flag:=x>e;
-  if Flag then
+  Flag:=x<e;
+  if not Flag then
   Result:=ln(x)
   else
   Result:=0;

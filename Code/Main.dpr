@@ -126,17 +126,18 @@ begin
   end;
 end;
 
-procedure Rpn(var Problem:string; var Flag:Boolean; var MasProblem:TMas;
-var LengthMas:Integer; var Stack:Pointer);
+procedure Rpn(Problem:string; var MasProblem:TMas; var LengthMas:Integer;
+var Flag:Boolean);
 var i:Integer;
 Temp:string;
+Stack:Pointer;
 begin
+  Stack:=nil;
   LengthMas:=0;
   i:=1;
-  while (i<=length(Problem)) and Flag do
+  while (i<=length(Problem)) and not Flag do
   begin
     Temp:='';
-    Flag:=False;
     case Problem[i] of
     '0'..'9':
       begin
@@ -147,13 +148,11 @@ begin
           Inc(i);
         end;
         Dec(i);
-        Flag:=True;
         Inc(LengthMas);
         MasProblem[LengthMas]:=Temp;
       end;
     '+', '-':
       begin
-        Flag:=True;
         while (Stack<>nil) and (Stack^.Data<>'(') do
         begin
           Pop(Stack, Temp);
@@ -164,7 +163,6 @@ begin
       end;
      '*', '/':
       begin
-        Flag:=True;
         while (Stack<>nil) and (Stack^.Data <> '+') and (Stack^.Data <> '-') and (Stack^.Data <> '(') do
         begin
           Pop(Stack, Temp);
@@ -175,7 +173,6 @@ begin
       end;
      '^':
       begin
-        Flag:=True;
         while (Stack<>nil) and (Stack^.Data <> '+') and (Stack^.Data <> '-')
          and (Stack^.Data <> '*') and (Stack^.Data <> '/') and (Stack^.Data <> '(') do
         begin
@@ -186,13 +183,8 @@ begin
         Push(Stack, '^');
       end;
     '(':
-      begin
-        Flag:=True;
         Push(Stack, '(');
-      end;
     ')':
-      begin
-      Flag:=True;
         repeat
           Pop(Stack, Temp);
           if Temp <> '(' then
@@ -201,15 +193,10 @@ begin
             MasProblem[LengthMas]:=Temp;
           end
         until (Stack = nil) or (Temp = '(');
-      end;
-    else
-      begin
-        if Problem[i] = 'x' then
-        begin
-          Push(Stack, 'x');
-          Flag:=True;
-        end;
-        if (i<=length(Problem)-2) and not Flag then
+    'x':
+        Push(Stack, 'x');
+    's', 'c', 'e':
+        if (i<=length(Problem)-2) then
         begin
         Temp:=Copy(Problem, i, 3);
         if (Temp = 'sin') or (Temp = 'cos') or (Temp = 'exp') or
@@ -217,9 +204,9 @@ begin
           begin
             Push(Stack, Temp);
             Inc(i, 2);
-            Flag:=True
           end;
         end;
+    'l', 't':
         if (i<=Length(Problem)-1) and not Flag then
         begin
         Temp:=Copy(Problem, i, 2);
@@ -227,24 +214,16 @@ begin
           begin
             Push(Stack, Temp);
             Inc(i);
-            Flag:=True
           end;
         end;
-        if (i<=Length(Problem)-3) and not Flag then
-        begin
-        Temp:=Copy(Problem, i, 4);
-        if (Temp = 'sqrt') then
-          begin
-            Push(Stack, Temp);
-            Inc(i, 3);
-            Flag:=True;
-          end;
-        end;
-      end;
+    'k':                //Здесь сделать значок квадратного корня из числа, который потом будет вводиться с кнопки
+        Push(Stack, 'k');
+    else
+      Flag:=True;
     end;
     Inc(i);
   end;
-  if Flag then
+  if not Flag then
   begin
     while Stack <> nil do
     begin
@@ -265,13 +244,13 @@ begin
     end;
 end;
 
-procedure Solve(MasProblem:TMas; LengthMas:Integer; var Stack:FloatPointer; var Flag:Boolean);
+procedure Solve(MasProblem:TMas; LengthMas:Integer; var Flag:Boolean; var Stack:FloatPointer);
 var i:Integer;
 Temp:Real;
-Operand1, Operand2:Real;
+Operand2:Real;
 begin
   i:=1;
-  while (i<=LengthMas) and Flag do
+  while (i<=LengthMas) and not Flag do
   begin
     if IsNumber(MasProblem[i]) then
     begin
@@ -280,50 +259,52 @@ begin
     end
     else
     begin
+      FloatPop(Stack, Temp);
       case Length(MasProblem[i]) of
       1:
         begin
-        FloatPop(Stack, Operand1);
-        FloatPop(Stack, Operand2);
+          if MasProblem[i][1] = 'k' then
+          Temp:=Degree(Temp, 0.5, e, Flag)
+          else
+          FloatPop(Stack, Operand2);
           case MasProblem[i][1] of
           '+':
-              Temp:=Operand1+Operand2;
+              Temp:=Operand2+Temp;
           '-':
-              Temp:=Operand1-Operand2;
+              Temp:=Operand2-Temp;
           '*':
-              Temp:=Operand1*Operand2;
+              Temp:=Operand2*Temp;
           '/':
-              Temp:=Divide(Operand1, Operand2, e, Flag);
+              Temp:=Divide(Operand2, Temp, e, Flag);
           '^':
-             Temp:=Degree(Operand1, Operand2, e, Flag);
+             Temp:=Degree(Operand2, Temp, e, Flag);
           end;
         end;
       2:
         begin
-          FloatPop(Stack, Operand1);
           case MasProblem[i][1] of
           'l':
-              Temp:=Loge(Operand1, e, Flag);
+              Temp:=Loge(Temp, e, Flag);
           't':
               Temp:=tg(Temp, e, Flag);
           end;
         end;
       3:
         begin
-          FloatPop(Stack, Operand1);
           case MasProblem[i][1] of
-          's': Temp:=Sinus(Operand1, e);
+          's': Temp:=Sinus(Temp, e);
           'c':
             begin
               case MasProblem[i][2] of
-                't': Temp:=Ctg(Operand1, e, Flag);
-                'o': Temp:=Cosinus(Operand1, e);
+                't': Temp:=Ctg(Temp, e, Flag);
+                'o': Temp:=Cosinus(Temp, e);
               end;
             end;
-          'e': Temp:=exp(Operand1);
+          'e': Temp:=exp(Temp);
           end;
         end;
-      4: Temp:=Degree(Operand1, 0.5, e, Flag);
+      4:
+          Temp:=Degree(Temp, 0.5, e, Flag);
       end;
       FloatPush(Stack, Temp);
       Inc(i);
@@ -333,7 +314,7 @@ end;
 
 var
 FloatStack:FloatPointer;
-Stack:Pointer;
+Stack:FloatPointer;
 Problem:string;
 Temp:real;
 Flag:boolean;
@@ -341,20 +322,19 @@ MasProblem:TMas;
 LengthMas:Integer;
 begin
   LengthMas:=0;
-  Flag:=True;
+  Flag:=False;
   writeln('Введите пример:');
   Readln(Problem);
   Prepare(Problem);
-  Stack:=nil;
-  Rpn(Problem, Flag, MasProblem, LengthMas, Stack);
-  if Flag then
+  Rpn(Problem, MasProblem, LengthMas, Flag);
+  if not Flag then
   begin
-    Fill_x(MasProblem, LengthMas, 23.34);
     ReplaceDots(MasProblem, LengthMas);
-    Solve(MasProblem, LengthMas, FloatStack, Flag);
-      if Flag then
+    Stack:=nil;
+    Solve(MasProblem, LengthMas, Flag, Stack);
+      if not Flag then
       begin
-        FloatPop(FloatStack, Temp);
+        FloatPop(Stack, Temp);
         Writeln('Результат = ', Temp:10:3);
       end
       else
