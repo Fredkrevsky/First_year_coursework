@@ -10,6 +10,7 @@ function cosinus(x, e:Real):Real;
 function tg(x,e:Real; var Flag:Boolean):Real;
 function ctg(x,e:Real; var Flag:Boolean):Real;
 function loge(x, e:Real; var Flag:Boolean):Real;
+procedure ReplaceDots(var Problem:string);
 
 implementation
 
@@ -17,9 +18,9 @@ function Divide(Operand1, Operand2, e:Real; var Flag:Boolean):Real;
 begin
   Flag:=Abs(Operand2)<e;
   if not Flag then
-  Result:=Operand1/Operand2
+    Result:=Operand1/Operand2
   else
-  Result:=0;
+    Result:=0;
 end;
 
 function Degree(Operand1, Operand2, e:Real; var Flag:Boolean):Real;
@@ -27,15 +28,10 @@ var i:Integer;
 Temp:Real;
 begin
   if Operand1>e then
-  begin
-    Result:=exp(Operand2*ln(Operand1));
-  end
+    Result:=exp(Operand2*ln(Operand1))
   else if Abs(Operand1)<e then
   begin
-    if Operand2<e then
-    begin
-      Flag:=True;
-    end;
+    Flag:=Operand2<e;
     Result:=0;
   end
   else
@@ -76,11 +72,9 @@ begin
 f:=x<0;
 x:=abs(x);
 while x>Period*pi do
-begin
   x:=x-Period*pi;
-end;
 if f then
-x:=-x;
+  x:=-x;
 end;
 
 function sinus(x, e:Real):Real;
@@ -124,9 +118,9 @@ begin
   Reduction(x, 1);
   Flag:=Abs(Abs(x)-pi/2)<e;
   if not Flag then
-  Result:=sinus(x, e)/cosinus(x, e)
+    Result:=sinus(x, e)/cosinus(x, e)
   else
-  Result:=0;
+    Result:=0;
 end;
 
 function ctg(x, e:Real; var Flag:boolean):Real;
@@ -134,18 +128,26 @@ begin
   Reduction(x, 1);
   Flag:=Abs(x)<e;
   if not Flag then
-  Result:=cosinus(x, e)/sinus(x, e)
+    Result:=cosinus(x, e)/sinus(x, e)
   else
-  Result:=0;
+    Result:=0;
 end;
 
 function loge(x, e:Real; var Flag:Boolean):Real;
 begin
   Flag:=x<e;
   if not Flag then
-  Result:=ln(x)
+    Result:=ln(x)
   else
-  Result:=0;
+    Result:=0;
+end;
+
+procedure ReplaceDots(var Problem:string);
+begin
+  while Pos('.', Problem)<>0 do
+  begin
+    Problem[Pos('.', Problem)]:=',';
+  end;
 end;
 
 end.

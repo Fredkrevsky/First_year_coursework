@@ -39,15 +39,7 @@ implementation
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
-  try
-    StrToInt(Form1.Edit1.Text);
-  except
-    Form1.Edit2.Text:='Ошибка';
-  end;
-  if StrToInt(Form1.Edit1.Text) mod 2 = 0 then
-  Form1.Edit2.Text:='Четное'
-  else
-  Form1.Edit2.Text:='Нечётное';
+  Form1.Edit1.Text
 end;
 
 procedure TForm1.Edit1Change(Sender: TObject);

@@ -114,18 +114,6 @@ begin
   end;
 end;
 
-procedure ReplaceDots(var MasProblem:TMas; LengthMAs:Integer);
-var
-i, Temp:Integer;
-begin
-  for i:=1 to LengthMas do
-  begin
-    Temp:=Pos('.', MasProblem[i]);
-    if Temp<>0 then
-      MasProblem[i][Temp]:=',';
-  end;
-end;
-
 procedure Rpn(Problem:string; var MasProblem:TMas; var LengthMas:Integer;
 var Flag:Boolean);
 var i:Integer;
@@ -135,14 +123,14 @@ begin
   Stack:=nil;
   LengthMas:=0;
   i:=1;
-  while (i<=length(Problem)) and not Flag do
+  while (i<=length(Problem)) and not Flag and (LengthMas<r) do
   begin
     Temp:='';
     case Problem[i] of
     '0'..'9':
       begin
         while (i<=Length(Problem)) and ((Problem[i]>='0') and
-        (Problem[i]<='9') or (Problem[i] = '.')) do
+        (Problem[i]<='9') or (Problem[i] = ',')) do
         begin
           Temp:=Temp+Problem[i];
           Inc(i);
@@ -259,52 +247,62 @@ begin
     end
     else
     begin
-      FloatPop(Stack, Temp);
-      case Length(MasProblem[i]) of
-      1:
-        begin
-          if MasProblem[i][1] = 'k' then
-          Temp:=Degree(Temp, 0.5, e, Flag)
-          else
-          FloatPop(Stack, Operand2);
-          case MasProblem[i][1] of
-          '+':
-              Temp:=Operand2+Temp;
-          '-':
-              Temp:=Operand2-Temp;
-          '*':
-              Temp:=Operand2*Temp;
-          '/':
-              Temp:=Divide(Operand2, Temp, e, Flag);
-          '^':
-             Temp:=Degree(Operand2, Temp, e, Flag);
-          end;
-        end;
-      2:
-        begin
-          case MasProblem[i][1] of
-          'l':
-              Temp:=Loge(Temp, e, Flag);
-          't':
-              Temp:=tg(Temp, e, Flag);
-          end;
-        end;
-      3:
-        begin
-          case MasProblem[i][1] of
-          's': Temp:=Sinus(Temp, e);
-          'c':
+      Flag:=Stack=nil;
+      if Not Flag then
+      begin
+        FloatPop(Stack, Temp);
+        case Length(MasProblem[i]) of
+        1:
+          begin
+            if MasProblem[i][1] = 'k' then
+            Temp:=Degree(Temp, 0.5, e, Flag)
+            else
             begin
-              case MasProblem[i][2] of
-                't': Temp:=Ctg(Temp, e, Flag);
-                'o': Temp:=Cosinus(Temp, e);
+              Flag:=Stack=nil;
+              if Not Flag then
+                begin
+                FloatPop(Stack, Operand2);
+                case MasProblem[i][1] of
+                '+':
+                    Temp:=Operand2+Temp;
+                '-':
+                    Temp:=Operand2-Temp;
+                '*':
+                    Temp:=Operand2*Temp;
+                '/':
+                    Temp:=Divide(Operand2, Temp, e, Flag);
+                '^':
+                   Temp:=Degree(Operand2, Temp, e, Flag);
+                end;
               end;
             end;
-          'e': Temp:=exp(Temp);
           end;
+        2:
+          begin
+            case MasProblem[i][1] of
+            'l':
+                Temp:=Loge(Temp, e, Flag);
+            't':
+                Temp:=tg(Temp, e, Flag);
+            end;
+          end;
+        3:
+          begin
+            case MasProblem[i][1] of
+            's': Temp:=Sinus(Temp, e);
+            'c':
+              begin
+                case MasProblem[i][2] of
+                  't': Temp:=Ctg(Temp, e, Flag);
+                  'o': Temp:=Cosinus(Temp, e);
+                end;
+              end;
+            'e': Temp:=exp(Temp);
+            end;
+          end;
+        4:
+            Temp:=Degree(Temp, 0.5, e, Flag);
         end;
-      4:
-          Temp:=Degree(Temp, 0.5, e, Flag);
       end;
       FloatPush(Stack, Temp);
       Inc(i);
@@ -326,16 +324,19 @@ begin
   writeln('Введите пример:');
   Readln(Problem);
   Prepare(Problem);
+  ReplaceDots(Problem);
   Rpn(Problem, MasProblem, LengthMas, Flag);
   if not Flag then
   begin
-    ReplaceDots(MasProblem, LengthMas);
     Stack:=nil;
     Solve(MasProblem, LengthMas, Flag, Stack);
       if not Flag then
       begin
         FloatPop(Stack, Temp);
-        Writeln('Результат = ', Temp:10:3);
+        if Stack = nil then
+        Writeln('Результат = ', Temp:10:3)
+        else
+        Writeln('Ошибка');
       end
       else
       Writeln('Ошибка');
