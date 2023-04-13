@@ -4,8 +4,9 @@ interface
 
 uses System.SysUtils;
 
-const r=100;
-e = 0.001;
+const
+  r = 100;
+  e = 0.001;
 
 type
   Tmas = array [1 .. r] of string;
@@ -38,12 +39,12 @@ procedure Pop(var Stack: Pointer; var ToPop: string);
 procedure FloatPush(var Stack: FloatPointer; ToPush: Real);
 procedure FloatPop(var Stack: FloatPointer; var ToPop: Real);
 procedure Prepare(var Problem: String);
-procedure Rpn(Problem: string; var MasProblem: Tmas; var LengthMas: Integer;
-  var Flag: Boolean; e:Real);
-procedure Fill_x(var MasProblem: Tmas; LengthMas: Integer; x: Real);
-procedure Solve(MasProblem: Tmas; LengthMas: Integer; var Flag: Boolean;
-  var Stack: FloatPointer; e:Real);
-
+procedure Rpn(Problem: string; var MasProblem: Tmas; var LengthMas: integer;
+  var Flag: Boolean; e: Real);
+procedure Fill_x(var MasProblem: Tmas; LengthMas: integer; x: Real);
+procedure Solve(MasProblem: Tmas; LengthMas: integer; var Flag: Boolean;
+  var Stack: FloatPointer; e: Real);
+procedure FreeStack(var Stack: FloatPointer);
 
 implementation
 
@@ -243,7 +244,7 @@ end;
 
 procedure Prepare(var Problem: String);
 var
-  i: Integer;
+  i: integer;
 begin
   if Problem[1] = '-' then
     Insert('0', Problem, 1);
@@ -257,10 +258,10 @@ begin
   end;
 end;
 
-procedure Rpn(Problem: string; var MasProblem: Tmas; var LengthMas: Integer;
-  var Flag: Boolean; e:Real);
+procedure Rpn(Problem: string; var MasProblem: Tmas; var LengthMas: integer;
+  var Flag: Boolean; e: Real);
 var
-  i: Integer;
+  i: integer;
   Temp: string;
   Stack: Pointer;
 begin
@@ -350,8 +351,6 @@ begin
               Inc(i);
             end;
           end;
-          'k': // Здесь сделать значок квадратного корня из числа, который потом будет вводиться с кнопки
-            Push(Stack, 'k');
         else
           Flag := True;
     end;
@@ -368,9 +367,9 @@ begin
   end;
 end;
 
-procedure Fill_x(var MasProblem: Tmas; LengthMas: Integer; x: Real);
+procedure Fill_x(var MasProblem: Tmas; LengthMas: integer; x: Real);
 var
-  i: Integer;
+  i: integer;
 begin
   for i := 1 to LengthMas do
   begin
@@ -379,10 +378,10 @@ begin
   end;
 end;
 
-procedure Solve(MasProblem: Tmas; LengthMas: Integer; var Flag: Boolean;
-  var Stack: FloatPointer; e:Real);
+procedure Solve(MasProblem: Tmas; LengthMas: integer; var Flag: Boolean;
+  var Stack: FloatPointer; e: Real);
 var
-  i: Integer;
+  i: integer;
   Temp: Real;
   Operand2: Real;
 begin
@@ -403,34 +402,30 @@ begin
         case Length(MasProblem[i]) of
           1:
             begin
-              if MasProblem[i][1] = 'k' then
-                Temp := Degree(Temp, 0.5, e, Flag)
-              else
+              Flag := Stack = nil;
+              if Not Flag then
               begin
-                Flag := Stack = nil;
-                if Not Flag then
-                begin
-                  FloatPop(Stack, Operand2);
-                  case MasProblem[i][1] of
-                    '+':
-                      Temp := Operand2 + Temp;
-                    '-':
-                      Temp := Operand2 - Temp;
-                    '*':
-                      Temp := Operand2 * Temp;
-                    '/':
-                      Temp := Divide(Operand2, Temp, e, Flag);
-                    '^':
-                      Temp := Degree(Operand2, Temp, e, Flag);
-                  end;
+                FloatPop(Stack, Operand2);
+                case MasProblem[i][1] of
+                  '+':
+                    Temp := Operand2 + Temp;
+                  '-':
+                    Temp := Operand2 - Temp;
+                  '*':
+                    Temp := Operand2 * Temp;
+                  '/':
+                    Temp := Divide(Operand2, Temp, e, Flag);
+                  '^':
+                    Temp := Degree(Operand2, Temp, e, Flag);
                 end;
               end;
+
             end;
           2:
             begin
               case MasProblem[i][1] of
                 'l':
-                  Temp := Loge(Temp, e, Flag);
+                  Temp := loge(Temp, e, Flag);
                 't':
                   Temp := tg(Temp, e, Flag);
               end;
@@ -439,14 +434,14 @@ begin
             begin
               case MasProblem[i][1] of
                 's':
-                  Temp := Sinus(Temp, e);
+                  Temp := sinus(Temp, e);
                 'c':
                   begin
                     case MasProblem[i][2] of
                       't':
-                        Temp := Ctg(Temp, e, Flag);
+                        Temp := ctg(Temp, e, Flag);
                       'o':
-                        Temp := Cosinus(Temp, e);
+                        Temp := cosinus(Temp, e);
                     end;
                   end;
                 'e':
@@ -460,6 +455,19 @@ begin
       FloatPush(Stack, Temp);
       Inc(i);
     end;
+  end;
+
+end;
+
+procedure FreeStack(var Stack: FloatPointer);
+var
+  Temp: FloatPointer;
+begin
+  while Stack <> nil do
+  begin
+    Temp := Stack;
+    Stack := Stack^.Next;
+    Dispose(Temp);
   end;
 end;
 
