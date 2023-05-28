@@ -16,7 +16,7 @@ object Menu: TMenu
   TextHeight = 13
   object ExitButton: TButton
     Left = 136
-    Top = 416
+    Top = 312
     Width = 201
     Height = 81
     Caption = #1042#1099#1081#1090#1080
@@ -40,14 +40,5 @@ object Menu: TMenu
     Caption = #1056#1077#1096#1080#1090#1100' '#1087#1088#1080#1084#1077#1088
     TabOrder = 2
     OnClick = ProblemButtonClick
-  end
-  object SettingsButton: TButton
-    Left = 136
-    Top = 304
-    Width = 201
-    Height = 81
-    Caption = #1053#1072#1089#1090#1088#1086#1081#1082#1080
-    TabOrder = 3
-    OnClick = SettingsButtonClick
   end
 end

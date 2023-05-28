@@ -4,7 +4,7 @@
         <ProjectVersion>19.2</ProjectVersion>
         <FrameworkType>VCL</FrameworkType>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Release</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Application</AppType>
@@ -98,11 +98,22 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="..\Code\MyFunctions.pas"/>
         <DCCReference Include="SolveProblem.pas">
-            <Form>FSolve</Form>
+            <Form>,
+  MyFunctions in &apos;MyFunctions.pas&apos;,
+  MenuForm in &apos;MenuForm.pas&apos; {Menu</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="MyFunctions.pas"/>
+        <DCCReference Include="MenuForm.pas">
+            <Form>,
+  MakePlot in &apos;MakePlot.pas&apos;,
+  TypesAndStructures in &apos;TypesAndStructures.pas&apos;;
+
+{$R *.res</Form>
+        </DCCReference>
+        <DCCReference Include="MakePlot.pas"/>
+        <DCCReference Include="TypesAndStructures.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -126,6 +137,12 @@
             </Delphi.Personality>
             <Deployment Version="3">
                 <DeployFile LocalName="Win32\Debug\Form.exe" Configuration="Debug" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>Form.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="Win32\Release\Form.exe" Configuration="Release" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>Form.exe</RemoteName>
                         <Overwrite>true</Overwrite>
