@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>1899.12.30 00:00:00.000.916,=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.482,=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.075,=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.159,=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.045,=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.137,=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.982,C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Settings.dfm=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\SettingsForm.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.872,C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Unit2.dfm=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\MakePlot.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.456,C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Project2.dproj=C:\Users\User\Documents\Embarcadero\Studio\Projects\Project2.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.453,C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Unit1.pas=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Settings.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.412,=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.009,=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.453,C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Unit1.dfm=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Settings.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.925,C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Unit1.dfm=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\AddFormula.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.151,C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Structures.pas=</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.565,=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\MyFunctions.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.912,=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\MenuForm.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.394,C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Unit1.dfm=C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.925,C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Unit1.pas=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\AddFormula.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.091,C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Unit1.pas=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\StackUnit.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.863,=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.069,C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\SettingsForm.dfm=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Unit1.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.219,C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Unit1.pas=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\List.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.394,C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Unit1.pas=C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.872,C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Unit2.pas=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\MakePlot.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.392,=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.489,=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.402,=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Code\MyFunctions.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.701,C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Unit2.pas=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\TypesAndStructures.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.211,=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.380,=C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.121,=C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.137,=C:\Users\User\Documents\Embarcadero\Studio\Projects\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.819,=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.775,C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\List.pas=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Structures.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.970,=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Unit3.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.255,=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Settings.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.731,C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Settings.pas=</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.703,C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Settings.pas=</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.990,C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\AddFormula.pas=</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.506,=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\SolveProblem.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.982,C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Settings.pas=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\SettingsForm.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.345,C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Form.dproj=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Project2.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.706,C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Plotting.pas=</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.155,C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Plotting.pas=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.983,C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Settings.pas=</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.155,C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Plotting.dfm=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Unit1.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.069,C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\SettingsForm.pas=C:\Users\User\Desktop\Курсач ОАиП\First_year_coursework\Forms\Unit1.pas</Transaction>
+  </Transactions>
+</BorlandProject>
